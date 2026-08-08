@@ -135,8 +135,8 @@ void initDevices(void)
     auto configSW3526 = [](SW3526& dev) {
         dev.unlockRegisters();
         
-        // 0. Set current sense resistor (5mΩ on this PCB)
-        dev.setSenseResistor(5);
+        // 0. Set current sense resistor (10mΩ on this PCB)
+        dev.setSenseResistor(10);
         
         // 1. Buck switching frequency: 312kHz (REG 0xA6 Bit7=1)
         dev.setBuckFreq(312);
