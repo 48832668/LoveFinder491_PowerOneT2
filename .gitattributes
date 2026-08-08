@@ -1,0 +1,55 @@
+# ========================================
+# Auto-detect text files & normalize line endings
+# ========================================
+* text=auto
+
+# ========================================
+# Source code: LF on commit, CRLF on Windows checkout
+# ========================================
+*.c        text
+*.h        text
+*.cpp      text
+*.hpp      text
+*.s        text
+*.S        text
+*.py       text
+*.ld       text
+*.icf      text
+
+# ========================================
+# CubeMX / MDK project files (XML/text)
+# ========================================
+*.ioc      text
+*.uvprojx  text
+*.uvoptx   text
+*.uvguix.* text
+
+# ========================================
+# Build artifacts - binary
+# ========================================
+*.o        binary
+*.obj      binary
+*.d        binary
+*.axf      binary
+*.elf      binary
+*.hex      binary
+*.bin      binary
+*.lib      binary
+*.a        binary
+
+# ========================================
+# Documentation / plain text
+# ========================================
+*.md       text
+*.txt      text
+*.cfg      text
+
+# ========================================
+# Images - binary
+# ========================================
+*.png      binary
+*.jpg      binary
+*.jpeg     binary
+*.bmp      binary
+*.gif      binary
+*.svg      binary

@@ -1,0 +1,157 @@
+# ========================================
+# Keil MDK-ARM
+# ========================================
+
+# Object files
+*.o
+*.obj
+*.d
+*.crf
+
+# Executables
+*.axf
+*.elf
+*.hex
+*.bin
+*.lib
+*.a
+
+# Listing files
+*.lst
+*.map
+*.lnp
+*.sct
+*.scf
+
+# Build logs
+*.htm
+*.build_log.htm
+*.dep
+build_log.txt
+
+# Debug files
+*.uvguix.*
+*.uvopt
+*.uvoptx
+*.uvproj
+*.bak
+*.ddk
+*.plg
+
+# MDK-ARM build output & generated directories
+MDK-ARM/*/
+
+# Backup files
+*~
+
+# ========================================
+# STM32CubeMX
+# ========================================
+
+# CubeMX project backup
+*.ioc.backup
+
+# ========================================
+# IDE / Editors
+# ========================================
+
+# VSCode
+.vscode/
+*.code-workspace
+
+# CLion / IntelliJ
+.idea/
+*.iml
+cmake-build-*/
+
+# Eclipse
+.settings/
+.project
+.cproject
+
+# Sublime Text
+*.sublime-workspace
+*.sublime-project
+
+# ========================================
+# Reference Projects / Docs (not part of this project)
+# ========================================
+
+refProj/
+refDoc/
+
+# ========================================
+# CMSIS - only keep what's needed for compilation
+# ========================================
+
+Drivers/CMSIS/DSP/
+Drivers/CMSIS/NN/
+Drivers/CMSIS/RTOS/
+Drivers/CMSIS/RTOS2/
+Drivers/CMSIS/docs/
+
+# ========================================
+# STM32 HAL Driver - only keep compiled sources
+# ========================================
+
+# Ignore all HAL/LL .c sources by default
+Drivers/STM32G0xx_HAL_Driver/Src/*.c
+
+# Re-include only the HAL sources that are actually compiled:
+!Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_hal.c
+!Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_hal_adc.c
+!Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_hal_adc_ex.c
+!Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_hal_cortex.c
+!Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_hal_dma.c
+!Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_hal_dma_ex.c
+!Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_hal_exti.c
+!Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_hal_flash.c
+!Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_hal_flash_ex.c
+!Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_hal_gpio.c
+!Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_hal_i2c.c
+!Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_hal_i2c_ex.c
+!Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_hal_pwr.c
+!Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_hal_pwr_ex.c
+!Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_hal_rcc.c
+!Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_hal_rcc_ex.c
+!Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_hal_spi.c
+!Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_hal_spi_ex.c
+!Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_hal_tim.c
+!Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_hal_tim_ex.c
+
+# Re-include only the LL sources that are actually compiled:
+!Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_ll_adc.c
+!Drivers/STM32G0xx_HAL_Driver/Src/stm32g0xx_ll_rcc.c
+
+# ========================================
+# Python
+# ========================================
+
+__pycache__/
+*.pyc
+*.pyo
+
+# ========================================
+# OS Generated
+# ========================================
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Linux
+
+# ========================================
+# Misc
+# ========================================
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.temp
+*.swp
+*.swo
