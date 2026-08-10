@@ -5,9 +5,10 @@ ST7735 面板类型管理器 & SW3526 调试工具
 =======================================
 
 功能：
-  1. 查看 / 切换 ST7735 显示屏的面板类型（A / B）
+  1. 查看 / 切换 ST7735 显示屏的面板类型（A / B / C）
      - 面板类型由 LoveFinderLib/ST7735/ST7735_PanelConfig.hpp 控制
      - 同一时间只能激活一种面板类型
+     - 切换时自动屏蔽当前已激活的面板类型，只提供其他选项
   2. 调试选项 A：配置所有 SW3526S 的检流电阻（采样电阻）
      - 选项 1：10 毫欧（10mΩ，芯片 ADC 出厂标定值）
      - 选项 2：5 毫欧（5mΩ，实际电流 = ADC 读数 × 2）
@@ -16,7 +17,7 @@ ST7735 面板类型管理器 & SW3526 调试工具
 用法：
   python st7735_panel_tool.py           进入交互菜单
   python st7735_panel_tool.py get       查看当前面板类型
-  python st7735_panel_tool.py set A|B   切换面板类型
+  python st7735_panel_tool.py set A|B|C 切换面板类型（不能切到当前已激活的类型）
   python st7735_panel_tool.py sw3526    查看当前 SW3526 检流电阻
   python st7735_panel_tool.py sw3526 1|2|10|5   配置检流电阻（1=10mΩ，2=5mΩ）
 """
@@ -37,7 +38,13 @@ PROJECT_ROOT = Path(__file__).resolve().parent
 PANEL_CONFIG_FILE = PROJECT_ROOT / "LoveFinderLib" / "ST7735" / "ST7735_PanelConfig.hpp"
 MAIN_CPP_FILE = PROJECT_ROOT / "Core" / "Src" / "main.cpp"
 
-PANELS = ("A", "B")
+PANELS = ("A", "B", "C")
+
+PANEL_INFO = {
+    "A": "原批次（BGR，偏移 0/24，无反转，DEG_0）",
+    "B": "新批次（RGB，偏移 1/26，反转，DEG_180）",
+    "C": "新批次水平镜像（BGR，偏移 1/26，反色，DEG_0，MX 左右镜像）",
+}
 
 SENSE_RESISTOR_OPTIONS = {
     "1": 10,   # 10 毫欧
@@ -53,7 +60,7 @@ SENSE_5MOHM_WARNING = (
 
 # 匹配已注释与未注释的 #define
 _PANEL_DEFINE_RE = re.compile(
-    r"^\s*(?://\s*)?#define\s+(ST7735_PANEL_([AB]))\b", re.MULTILINE
+    r"^\s*(?://\s*)?#define\s+(ST7735_PANEL_([ABC]))\b", re.MULTILINE
 )
 # 匹配 main.cpp 中 configSW3526 里的 setSenseResistor 调用
 _SENSE_RESISTOR_RE = re.compile(r"(dev\.setSenseResistor\()(\d+)(\);)")
@@ -93,12 +100,24 @@ def get_current_panel(config: str | None = None) -> str:
 
 
 def set_panel(target: str) -> str:
-    """切换面板类型，返回新的激活类型。"""
+    """切换面板类型，返回新的激活类型。
+
+    基于当前激活的面板类型做屏蔽：不允许切换到当前已激活的类型。
+    """
     target = target.upper()
     if target not in PANELS:
         raise ToolError(f"未知面板类型 '{target}'，可用：{', '.join(PANELS)}")
 
     config = read_text(PANEL_CONFIG_FILE)
+
+    current = get_current_panel(config)
+    if target == current:
+        others = [p for p in PANELS if p != current]
+        raise ToolError(
+            f"当前面板已是 ST7735_PANEL_{current}（{PANEL_INFO[current]}），无需切换。\n"
+            f"可选面板类型：{'、'.join(others)}"
+        )
+
     found = {m.group(2): m for m in _PANEL_DEFINE_RE.finditer(config)}
     missing = [p for p in PANELS if p not in found]
     if missing:
@@ -106,7 +125,7 @@ def set_panel(target: str) -> str:
 
     lines = config.splitlines()
     for i, line in enumerate(lines):
-        m = re.match(r"^\s*(//\s*)?#define\s+(ST7735_PANEL_([AB]))\b", line)
+        m = re.match(r"^\s*(//\s*)?#define\s+(ST7735_PANEL_([ABC]))\b", line)
         if not m:
             continue
         is_active = m.group(1) is None
@@ -153,7 +172,8 @@ def set_sense_resistor(value: int) -> int:
 
 def cmd_get_panel() -> int:
     try:
-        print(f"当前 ST7735 面板类型：ST7735_PANEL_{get_current_panel()}")
+        p = get_current_panel()
+        print(f"当前 ST7735 面板类型：ST7735_PANEL_{p}（{PANEL_INFO[p]}）")
         return 0
     except ToolError as e:
         print(f"错误：{e}", file=sys.stderr)
@@ -163,7 +183,7 @@ def cmd_get_panel() -> int:
 def cmd_set_panel(target: str) -> int:
     try:
         new = set_panel(target)
-        print(f"已切换面板类型为 ST7735_PANEL_{new}")
+        print(f"已切换面板类型为 ST7735_PANEL_{new}（{PANEL_INFO[new]}）")
         print(f"配置文件：{PANEL_CONFIG_FILE}")
         return 0
     except ToolError as e:
@@ -242,25 +262,45 @@ def _describe_sense() -> str:
         return f"读取失败（{e}）"
 
 
+def clear_screen() -> None:
+    """清空屏幕，避免菜单与操作结果混在一起。"""
+    sys.stdout.write("\033[2J\033[H")
+    sys.stdout.flush()
+
+
 def interactive_menu() -> None:
     while True:
-        print("\n=========================================")
+        clear_screen()
+        try:
+            current = get_current_panel()
+            panel_line = f"当前面板：ST7735_PANEL_{current}（{PANEL_INFO[current]}）"
+        except ToolError as e:
+            panel_line = f"当前面板：读取失败（{e}）"
+        print("=========================================")
         print("   ST7735 面板类型管理器 & SW3526 调试工具")
         print("=========================================")
-        print("  1. 查看当前面板类型")
-        print("  2. 切换面板类型（A / B）")
-        print("  3. 调试选项（配置 SW3526S 检流电阻）")
+        print(f"  {panel_line}")
+        print("  1. 切换面板类型（A / B / C）")
+        print("  2. 调试选项（配置 SW3526S 检流电阻）")
         print("  0. 退出")
         print("=========================================")
 
-        choice = prompt("请选择操作（0-3）：")
+        choice = prompt("请选择操作（0-2）：")
 
         if choice == "1":
-            cmd_get_panel()
-        elif choice == "2":
-            target = prompt("请输入目标面板类型（A 或 B）：")
+            try:
+                current = get_current_panel()
+            except ToolError as e:
+                print(f"错误：{e}", file=sys.stderr)
+                continue
+            available = [p for p in PANELS if p != current]
+            print(f"当前面板类型：ST7735_PANEL_{current}（{PANEL_INFO[current]}）")
+            print("可选面板类型：")
+            for p in available:
+                print(f"  {p}：{PANEL_INFO[p]}")
+            target = prompt(f"请输入目标面板类型（{'/'.join(available)}）：")
             cmd_set_panel(target)
-        elif choice == "3":
+        elif choice == "2":
             cmd_debug_menu()
         elif choice in ("0", "q", "quit", "exit"):
             print("再见！")

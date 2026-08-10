@@ -20,21 +20,24 @@
  * PANEL SELECTION — Uncomment ONE of the following:
  *====================================================================*/
 
-// #define ST7735_PANEL_A          // Original batch (BGR, offset 0/24, no invert, DEG_0)
-#define ST7735_PANEL_B          // New batch (RGB, offset 1/26, invert, DEG_180)
+#define ST7735_PANEL_A          // Original batch (BGR, offset 0/24, no invert, DEG_0)
+// #define ST7735_PANEL_B          // New batch (RGB, offset 1/26, invert, DEG_180)
+// #define ST7735_PANEL_C          // New batch, horizontally mirrored (BGR, offset 1/26, invert, DEG_0, MX)
 
 /*====================================================================
  * Do not edit below this line
  *====================================================================*/
 
-#if defined(ST7735_PANEL_A) && defined(ST7735_PANEL_B)
+#if (defined(ST7735_PANEL_A) + defined(ST7735_PANEL_B) + defined(ST7735_PANEL_C)) > 1
 #error "Only one ST7735 panel can be selected at a time"
 #elif defined(ST7735_PANEL_A)
 #include "ST7735_Config_PanelA.hpp"
 #elif defined(ST7735_PANEL_B)
 #include "ST7735_Config_PanelB.hpp"
+#elif defined(ST7735_PANEL_C)
+#include "ST7735_Config_PanelC.hpp"
 #else
-#error "Must define ST7735_PANEL_A or ST7735_PANEL_B"
+#error "Must define ST7735_PANEL_A, ST7735_PANEL_B or ST7735_PANEL_C"
 #endif
 
 #endif // ST7735_PANELCONFIG_HPP
