@@ -341,7 +341,7 @@
               <MiscControls></MiscControls>
               <Define>USE_HAL_DRIVER,STM32G030xx</Define>
               <Undefine></Undefine>
-              <IncludePath>../Core/Inc;../Drivers/STM32G0xx_HAL_Driver/Inc;../Drivers/STM32G0xx_HAL_Driver/Inc/Legacy;../Drivers/CMSIS/Device/ST/STM32G0xx/Include;../Drivers/CMSIS/Include;../LoveFinderLib/ST7735;../LoveFinderLib/SW3526;../LoveFinderLib/UART;../LoveFinderLib/NTC_ADC</IncludePath>
+              <IncludePath>../Core/Inc;../Drivers/STM32G0xx_HAL_Driver/Inc;../Drivers/STM32G0xx_HAL_Driver/Inc/Legacy;../Drivers/CMSIS/Device/ST/STM32G0xx/Include;../Drivers/CMSIS/Include;../LoveFinderLib/ST7735;../LoveFinderLib/FontLib;../LoveFinderLib/SW3526;../LoveFinderLib/UART;../LoveFinderLib/NTC_ADC</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -581,9 +581,14 @@
               <FilePath>..\LoveFinderLib\ST7735\ST7735.cpp</FilePath>
             </File>
             <File>
+              <FileName>font_data.cpp</FileName>
+              <FileType>8</FileType>
+              <FilePath>..\LoveFinderLib\FontLib\font_data.cpp</FilePath>
+            </File>
+            <File>
               <FileName>fonts.cpp</FileName>
               <FileType>8</FileType>
-              <FilePath>..\LoveFinderLib\ST7735\fonts.cpp</FilePath>
+              <FilePath>..\LoveFinderLib\FontLib\fonts.cpp</FilePath>
             </File>
             <File>
               <FileName>NTC_ADC.cpp</FileName>

@@ -14,7 +14,7 @@
 #define ST7735_HPP
 
 #include "main.h"
-#include "fonts.hpp"
+#include "font.h"
 #include <cstdint>
 #include <cstdarg>
 #include <array>

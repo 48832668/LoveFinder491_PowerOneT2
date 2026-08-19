@@ -206,7 +206,7 @@ void initDevices(void)
     
     // Clear screen and show boot splash (centered on 160x80)
     lcd.fillScreenFast(ST7735_Color::BLACK);
-    lcd.print(9, 31, Font_11x18, ST7735_Color::CYAN, ST7735_Color::BLACK,
+    lcd.print(9, 31, Font_Subset_11x18, ST7735_Color::CYAN, ST7735_Color::BLACK,
               "PowerOneT2-V4");
     
     // Configure all 3 SW3526 channels first, then wait once
@@ -224,23 +224,23 @@ void initDevices(void)
  * @brief Update display with power data - flicker-free, centered alignment
  * 
  * Display layout (160x80):
- * Line 1 (Y=0):  VIN + Temp + Power (Font_7x10, height=10)
- * Line 2 (Y=13): [C3]/[C1]/[C2] OR Protocol (Font_11x18, height=18)
- * Line 3 (Y=33): Output voltage XX.X (Font_11x18, height=18)
- * Line 4 (Y=53): Output current X.YY (Font_11x18, height=18)
+ * Line 1 (Y=0):  VIN + Temp + Power (Font_Subset_7x10, height=10)
+ * Line 2 (Y=13): [C3]/[C1]/[C2] OR Protocol (Font_Subset_11x18, height=18)
+ * Line 3 (Y=33): Output voltage XX.X (Font_Subset_11x18, height=18)
+ * Line 4 (Y=53): Output current X.YY (Font_Subset_11x18, height=18)
  */
 void updateDisplay(void)
 {
-    // Column positions for Font_11x18 (centered layout)
+    // Column positions for Font_Subset_11x18 (centered layout)
     constexpr uint8_t COL1_X = 3;    // Column 1 X position (moved left 5px)
     constexpr uint8_t COL2_X = 58;   // Column 2 X position (center)
     constexpr uint8_t COL3_X = 113;  // Column 3 X position (moved right 5px)
     
     // ===== Unified Y Coordinates for All Lines =====
-    constexpr uint8_t LINE1_Y = 0;      // VIN + Temp + Power (Font_7x10, height=10)
-    constexpr uint8_t LINE2_Y = 13;     // Channel/Protocol (Font_11x18, height=18)
-    constexpr uint8_t LINE3_Y = 33;     // Voltage (Font_11x18, height=18)
-    constexpr uint8_t LINE4_Y = 58;     // Current (Font_11x18, height=18)
+    constexpr uint8_t LINE1_Y = 0;      // VIN + Temp + Power (Font_Subset_7x10, height=10)
+    constexpr uint8_t LINE2_Y = 13;     // Channel/Protocol (Font_Subset_11x18, height=18)
+    constexpr uint8_t LINE3_Y = 33;     // Voltage (Font_Subset_11x18, height=18)
+    constexpr uint8_t LINE4_Y = 58;     // Current (Font_Subset_11x18, height=18)
     
     // Rounded rectangle background for protocol display
     constexpr uint8_t PROTOCOL_BG_WIDTH = 48;   // 4 chars * 11px + margin
@@ -338,7 +338,7 @@ void updateDisplay(void)
     if (vin != prevVin) {
         uint16_t vin_v = vin / 1000;
         uint16_t vin_mv = (vin % 1000) / 10;
-        lcd.print(2, LINE1_Y, Font_7x10, ST7735_Color::BRIGHT_RED, ST7735_Color::BLACK,
+        lcd.print(2, LINE1_Y, Font_Subset_7x10, ST7735_Color::BRIGHT_RED, ST7735_Color::BLACK,
                   "%02d.%02dV", vin_v, vin_mv);
         prevVin = vin;
     }
@@ -355,18 +355,18 @@ void updateDisplay(void)
         } else {
             temp_color = ST7735_Color::BRIGHT_RED;   // Hot: red
         }
-        lcd.print(65, LINE1_Y, Font_7x10, temp_color, ST7735_Color::BLACK,
+        lcd.print(65, LINE1_Y, Font_Subset_7x10, temp_color, ST7735_Color::BLACK,
                   "%02d'C", temp % 100);
         prevTemp = temp;
     }
     
     if (totalPowerMw != prevPowerMw) {
-        lcd.print(114, LINE1_Y, Font_7x10, ST7735_Color::WHITE, ST7735_Color::BLACK,
+        lcd.print(114, LINE1_Y, Font_Subset_7x10, ST7735_Color::WHITE, ST7735_Color::BLACK,
                   "%03d.%dW", totalPowerW % 1000, totalPowerDeciW);
         prevPowerMw = totalPowerMw;
     }
     
-    // ========== Line 2: Channel names or Protocol (Font_11x18) ==========
+    // ========== Line 2: Channel names or Protocol (Font_Subset_11x18) ==========
     // Show [C3]/[C1]/[C2] in WHITE when NONE, otherwise show protocol with unique colors
     if (protC3 != prevC3_prot || protC1 != prevC1_prot || protC2 != prevC2_prot) {
         // Draw rounded rectangle backgrounds (gray with rounded corners)
@@ -431,33 +431,33 @@ void updateDisplay(void)
             c2_color = getProtocolColor(protC2);
         }
         
-        lcd.print(COL1_X, LINE2_Y, Font_11x18, c1_color, PROTOCOL_BG_COLOR, "%-4s", c1_display);
-        lcd.print(COL2_X, LINE2_Y, Font_11x18, c2_color, PROTOCOL_BG_COLOR, "%-4s", c2_display);
-        lcd.print(COL3_X, LINE2_Y, Font_11x18, c3_color, PROTOCOL_BG_COLOR, "%-4s", c3_display);
+        lcd.print(COL1_X, LINE2_Y, Font_Subset_11x18, c1_color, PROTOCOL_BG_COLOR, "%-4s", c1_display);
+        lcd.print(COL2_X, LINE2_Y, Font_Subset_11x18, c2_color, PROTOCOL_BG_COLOR, "%-4s", c2_display);
+        lcd.print(COL3_X, LINE2_Y, Font_Subset_11x18, c3_color, PROTOCOL_BG_COLOR, "%-4s", c3_display);
         
         prevC1_prot = protC1;
         prevC2_prot = protC2;
         prevC3_prot = protC3;
     }
     
-    // ========== Line 3: Output voltage (XX.X format with Font_11x18) ==========
+    // ========== Line 3: Output voltage (XX.X format with Font_Subset_11x18) ==========
     if (measC1.vout_mv != prevC1_vout || measC2.vout_mv != prevC2_vout || measC3.vout_mv != prevC3_vout) {
         // C1 voltage: XX.X (zero-padded)
         uint16_t c1_v = measC1.vout_mv / 1000;
         uint16_t c1_dv = (measC1.vout_mv % 1000) / 100;
-        lcd.print(COL1_X, LINE3_Y, Font_11x18, ST7735_Color::CYAN, ST7735_Color::BLACK,
+        lcd.print(COL1_X, LINE3_Y, Font_Subset_11x18, ST7735_Color::CYAN, ST7735_Color::BLACK,
                   "%02d.%d", c1_v, c1_dv);
         
         // C2 voltage: XX.X (zero-padded)
         uint16_t c2_v = measC2.vout_mv / 1000;
         uint16_t c2_dv = (measC2.vout_mv % 1000) / 100;
-        lcd.print(COL2_X, LINE3_Y, Font_11x18, ST7735_Color::CYAN, ST7735_Color::BLACK,
+        lcd.print(COL2_X, LINE3_Y, Font_Subset_11x18, ST7735_Color::CYAN, ST7735_Color::BLACK,
                   "%02d.%d", c2_v, c2_dv);
         
         // C3 voltage: XX.X (zero-padded)
         uint16_t c3_v = measC3.vout_mv / 1000;
         uint16_t c3_dv = (measC3.vout_mv % 1000) / 100;
-        lcd.print(COL3_X, LINE3_Y, Font_11x18, ST7735_Color::CYAN, ST7735_Color::BLACK,
+        lcd.print(COL3_X, LINE3_Y, Font_Subset_11x18, ST7735_Color::CYAN, ST7735_Color::BLACK,
                   "%02d.%d", c3_v, c3_dv);
         
         prevC1_vout = measC1.vout_mv;
@@ -517,24 +517,24 @@ void updateDisplay(void)
         drawAnimBar(0, COL3_X, VOLTAGE_BAR_Y, ST7735_Color::CYAN);
     }
     
-    // ========== Line 3: Output current (X.YY format with Font_11x18) ==========
+    // ========== Line 3: Output current (X.YY format with Font_Subset_11x18) ==========
     if (measC1.iout_ma != prevC1_iout || measC2.iout_ma != prevC2_iout || measC3.iout_ma != prevC3_iout) {
         // C1 current: X.YY
         uint16_t c1_a = measC1.iout_ma / 1000;
         uint16_t c1_hma = (measC1.iout_ma % 1000) / 10;
-        lcd.print(COL1_X, LINE4_Y, Font_11x18, ST7735_Color::YELLOW, ST7735_Color::BLACK,
+        lcd.print(COL1_X, LINE4_Y, Font_Subset_11x18, ST7735_Color::YELLOW, ST7735_Color::BLACK,
                   "%d.%02d", c1_a, c1_hma);
         
         // C2 current: X.YY
         uint16_t c2_a = measC2.iout_ma / 1000;
         uint16_t c2_hma = (measC2.iout_ma % 1000) / 10;
-        lcd.print(COL2_X, LINE4_Y, Font_11x18, ST7735_Color::YELLOW, ST7735_Color::BLACK,
+        lcd.print(COL2_X, LINE4_Y, Font_Subset_11x18, ST7735_Color::YELLOW, ST7735_Color::BLACK,
                   "%d.%02d", c2_a, c2_hma);
         
         // C3 current: X.YY
         uint16_t c3_a = measC3.iout_ma / 1000;
         uint16_t c3_hma = (measC3.iout_ma % 1000) / 10;
-        lcd.print(COL3_X, LINE4_Y, Font_11x18, ST7735_Color::YELLOW, ST7735_Color::BLACK,
+        lcd.print(COL3_X, LINE4_Y, Font_Subset_11x18, ST7735_Color::YELLOW, ST7735_Color::BLACK,
                   "%d.%02d", c3_a, c3_hma);
         
         prevC1_iout = measC1.iout_ma;
