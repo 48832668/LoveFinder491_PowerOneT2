@@ -20,9 +20,9 @@
  * PANEL SELECTION — Uncomment ONE of the following:
  *====================================================================*/
 
-#define ST7735_PANEL_A          // Original batch (BGR, offset 0/24, no invert, DEG_0)
+// #define ST7735_PANEL_A          // Original batch (BGR, offset 0/24, no invert, DEG_0)
 // #define ST7735_PANEL_B          // New batch (RGB, offset 1/26, invert, DEG_180)
-// #define ST7735_PANEL_C          // New batch, horizontally mirrored (BGR, offset 1/26, invert, DEG_0, MX)
+#define ST7735_PANEL_C          // New batch, horizontally mirrored (BGR, offset 1/26, invert, DEG_0, MX)
 
 /*====================================================================
  * Do not edit below this line
