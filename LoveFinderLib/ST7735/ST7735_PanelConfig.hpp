@@ -22,13 +22,14 @@
 
 // #define ST7735_PANEL_A          // Original batch (BGR, offset 0/24, no invert, DEG_0)
 // #define ST7735_PANEL_B          // New batch (RGB, offset 1/26, invert, DEG_180)
-#define ST7735_PANEL_C          // New batch, horizontally mirrored (BGR, offset 1/26, invert, DEG_0, MX)
+// #define ST7735_PANEL_C          // New batch, horizontally mirrored (BGR, offset 1/26, invert, DEG_0, MX)
+#define ST7735_PANEL_D          // A variant — inverted color (BGR, offset 1/26, invert, DEG_0)
 
 /*====================================================================
  * Do not edit below this line
  *====================================================================*/
 
-#if (defined(ST7735_PANEL_A) + defined(ST7735_PANEL_B) + defined(ST7735_PANEL_C)) > 1
+#if (defined(ST7735_PANEL_A) + defined(ST7735_PANEL_B) + defined(ST7735_PANEL_C) + defined(ST7735_PANEL_D)) > 1
 #error "Only one ST7735 panel can be selected at a time"
 #elif defined(ST7735_PANEL_A)
 #include "ST7735_Config_PanelA.hpp"
@@ -36,8 +37,10 @@
 #include "ST7735_Config_PanelB.hpp"
 #elif defined(ST7735_PANEL_C)
 #include "ST7735_Config_PanelC.hpp"
+#elif defined(ST7735_PANEL_D)
+#include "ST7735_Config_PanelD.hpp"
 #else
-#error "Must define ST7735_PANEL_A, ST7735_PANEL_B or ST7735_PANEL_C"
+#error "Must define ST7735_PANEL_A, ST7735_PANEL_B, ST7735_PANEL_C or ST7735_PANEL_D"
 #endif
 
 #endif // ST7735_PANELCONFIG_HPP

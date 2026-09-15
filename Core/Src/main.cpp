@@ -207,7 +207,7 @@ void initDevices(void)
     // Clear screen and show boot splash (centered on 160x80)
     lcd.fillScreenFast(ST7735_Color::BLACK);
     lcd.print(9, 31, Font_Subset_11x18, ST7735_Color::CYAN, ST7735_Color::BLACK,
-              "PowerOneT2-V4");
+              "PowerOneT2-V6");
     
     // Configure all 3 SW3526 channels first, then wait once
     // Buck forced-off timers run independently in hardware (1s auto-clear)

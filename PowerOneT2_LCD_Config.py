@@ -5,7 +5,7 @@ ST7735 面板类型管理器 & SW3526 调试工具
 =======================================
 
 功能：
-  1. 查看 / 切换 ST7735 显示屏的面板类型（A / B / C）
+  1. 查看 / 切换 ST7735 显示屏的面板类型（A / B / C / D）
      - 面板类型由 LoveFinderLib/ST7735/ST7735_PanelConfig.hpp 控制
      - 同一时间只能激活一种面板类型
      - 切换时自动屏蔽当前已激活的面板类型，只提供其他选项
@@ -17,7 +17,7 @@ ST7735 面板类型管理器 & SW3526 调试工具
 用法：
   python st7735_panel_tool.py           进入交互菜单
   python st7735_panel_tool.py get       查看当前面板类型
-  python st7735_panel_tool.py set A|B|C 切换面板类型（不能切到当前已激活的类型）
+  python st7735_panel_tool.py set A|B|C|D 切换面板类型（不能切到当前已激活的类型）
   python st7735_panel_tool.py sw3526    查看当前 SW3526 检流电阻
   python st7735_panel_tool.py sw3526 1|2|10|5   配置检流电阻（1=10mΩ，2=5mΩ）
 """
@@ -38,12 +38,13 @@ PROJECT_ROOT = Path(__file__).resolve().parent
 PANEL_CONFIG_FILE = PROJECT_ROOT / "LoveFinderLib" / "ST7735" / "ST7735_PanelConfig.hpp"
 MAIN_CPP_FILE = PROJECT_ROOT / "Core" / "Src" / "main.cpp"
 
-PANELS = ("A", "B", "C")
+PANELS = ("A", "B", "C", "D")
 
 PANEL_INFO = {
     "A": "原批次（BGR，偏移 0/24，无反转，DEG_0）",
     "B": "新批次（RGB，偏移 1/26，反转，DEG_180）",
     "C": "新批次水平镜像（BGR，偏移 1/26，反色，DEG_0，MX 左右镜像）",
+    "D": "A 反色版（BGR，偏移 1/26，反色，DEG_0）",
 }
 
 SENSE_RESISTOR_OPTIONS = {
@@ -60,7 +61,7 @@ SENSE_5MOHM_WARNING = (
 
 # 匹配已注释与未注释的 #define
 _PANEL_DEFINE_RE = re.compile(
-    r"^\s*(?://\s*)?#define\s+(ST7735_PANEL_([ABC]))\b", re.MULTILINE
+    r"^\s*(?://\s*)?#define\s+(ST7735_PANEL_([ABCD]))\b", re.MULTILINE
 )
 # 匹配 main.cpp 中 configSW3526 里的 setSenseResistor 调用
 _SENSE_RESISTOR_RE = re.compile(r"(dev\.setSenseResistor\()(\d+)(\);)")
@@ -125,7 +126,7 @@ def set_panel(target: str) -> str:
 
     lines = config.splitlines()
     for i, line in enumerate(lines):
-        m = re.match(r"^\s*(//\s*)?#define\s+(ST7735_PANEL_([ABC]))\b", line)
+        m = re.match(r"^\s*(//\s*)?#define\s+(ST7735_PANEL_([ABCD]))\b", line)
         if not m:
             continue
         is_active = m.group(1) is None
